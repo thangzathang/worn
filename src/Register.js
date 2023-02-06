@@ -2,8 +2,14 @@ import React, { useRef, useState, useEffect } from "react";
 import { faCheck, faTimes, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+// Axios
+import axios from "./api/axios";
+
 const USER_REGEX = /^[a-zA-Z0-9]+([._]?[a-zA-Z0-9]{3,23})$/;
 const PWD_REGEX = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,24}$/;
+
+// URLS
+const REGISTER_URL = "/register";
 
 const Register = () => {
   const userRef = useRef();
@@ -69,8 +75,36 @@ const Register = () => {
     }
 
     // Node JS backend needed here
-    console.log(user, pwd);
-    setSuccess(true);
+    // console.log(user, pwd);
+    // setSuccess(true);
+
+    try {
+      const response = await axios.post(REGISTER_URL, JSON.stringify({ user, pwd }), {
+        headers: {
+          "Content-Type": "application/json",
+          withCredentials: true,
+        },
+      });
+      console.log(response.data);
+      console.log(response.accessToken);
+      console.log(JSON.stringify(response));
+      setSuccess(true);
+
+      // Clear input fields
+      setUser("");
+      setPwd("");
+      setMatchPwd("");
+    } catch (error) {
+      if (!error?.response) {
+        setErrMsg("No Server Response");
+      } else if (error.response?.status === 409) {
+        setErrMsg("Username Taken");
+      } else {
+        setErrMsg("Registration Failed");
+        console.log("Error at Registration handleSubmit:", error);
+      }
+      errorRef.current.focus();
+    }
   };
 
   return (
