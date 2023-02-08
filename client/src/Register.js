@@ -9,7 +9,7 @@ const USER_REGEX = /^[a-zA-Z0-9]+([._]?[a-zA-Z0-9]{3,23})$/;
 const PWD_REGEX = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,24}$/;
 
 // URLS
-const REGISTER_URL = "/register";
+const REGISTER_URL = "/auth/register";
 
 const Register = () => {
   const userRef = useRef();

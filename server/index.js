@@ -4,16 +4,36 @@ dotenv.config();
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 
+// Imports
+const errorHandler = require("./middleware/errorHandler");
+
 // Database
 const pool = require("./db");
 // const path = require("path");
 
 const app = express();
 
+// Cors whitelist
+const whitelist = [
+  //
+  "http://localhost:3000",
+  process.env.FRONT_END_URL,
+];
+
 const corsOptions = {
-  //   origin: [process.env.FRONT_END_URL],
-  //   credentials: true,
-  //   optionSuccessStatus: 200,
+  origin: (origin, callback) => {
+    /* 
+    -1 means does not exist, but here we are checking !== so in context 
+     we aare makign sure the domain exists in the whitelist 
+     */
+    if (whitelist.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error("Domain not in the whitelist. Not allowed by CORS origin."));
+    }
+  },
+  optionSuccessStatus: 200,
+  credentials: true,
 };
 // console.log("Cors Option:", corsOptions);
 
@@ -39,7 +59,7 @@ const authRoutes = require("./routes/authRoutes");
 // const homepageRoutes = require("./routes/homepage");
 // const userRoutes = require("./routes/userRoutes");
 
-console.log("PostgresSQL Connection Status:", pool);
+// console.log("PostgresSQL Connection Status:", pool);
 
 // Register and Login Routes.
 app.use("/auth", authRoutes);
@@ -53,6 +73,16 @@ app.use("/auth", authRoutes);
 // app.get("*", (req, res) => {
 //   res.sendFile(path.join(__dirname, "client/build/index.html"));
 // });
+
+/* Error catcher */
+// App.use vs app.all - .use is more for middleware. .all is more for routing as it accepts regex.
+app.all("*", (req, res) => {
+  var fullUrl = req.protocol + "://" + req.get("host") + req.originalUrl;
+  res.status(404).send(`<h1>Page you are looking for (${fullUrl}) does <em>not</em> exist.</h1>`);
+});
+
+// Server Error Handling
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`Server has started on port ${PORT}.`);
