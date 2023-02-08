@@ -11,6 +11,31 @@ const bcrypt = require("bcrypt");
 // Database
 const pool = require("../db");
 
+// Chaining http methods
+/*
+// This means that for all '/', the get, post, delete, put are all in one chain. So cool.
+router.route('/')
+    .get((req, res) => {
+        res.json(data.employees);
+    })
+    .post((req, res) => {
+        res.json({
+            "firstname": req.body.firstname,
+            "lastname": req.body.lastname
+        });
+    })
+    .put((req, res) => {
+        res.json({
+            "firstname": req.body.firstname,
+            "lastname": req.body.lastname
+        });
+    })
+    .delete((req, res) => {
+        res.json({ "id": req.body.id })
+    });
+
+*/
+
 // Registering
 router.post("/register", validInfo, async (req, res) => {
   try {

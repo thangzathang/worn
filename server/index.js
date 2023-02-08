@@ -3,13 +3,13 @@ const dotenv = require("dotenv");
 dotenv.config();
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
+const path = require("path");
 
 // Imports
 const errorHandler = require("./middleware/errorHandler");
 
 // Database
 const pool = require("./db");
-// const path = require("path");
 
 const app = express();
 
@@ -75,7 +75,6 @@ app.use("/auth", authRoutes);
 // });
 
 /* Error catcher */
-// App.use vs app.all - .use is more for middleware. .all is more for routing as it accepts regex.
 app.all("*", (req, res) => {
   var fullUrl = req.protocol + "://" + req.get("host") + req.originalUrl;
   res.status(404).send(`<h1>Page you are looking for (${fullUrl}) does <em>not</em> exist.</h1>`);
