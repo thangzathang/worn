@@ -38,7 +38,7 @@ if (process.env.NODE_ENV === "production") {
 // const authorization = require("./middleware/authorization");
 
 // Import auth routes
-// const authRoutes = require("./routes/jwtAuths");
+const authRoutes = require("./routes/authRoutes");
 // const homepageRoutes = require("./routes/homepage");
 // const userRoutes = require("./routes/userRoutes");
 
@@ -130,7 +130,7 @@ app.get("/movies/:movie_id", async (req, res) => {
 /* Auth */
 
 // Register and Login Routes.
-// app.use("/auth", authRoutes);
+app.use("/auth", authRoutes);
 
 // Homepage
 // app.use("/homepage", homepageRoutes);
