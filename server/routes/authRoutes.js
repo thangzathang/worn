@@ -94,7 +94,7 @@ router.post("/login", validInfo, async (req, res) => {
 
     console.log("Password is valid:", validPassword);
     if (!validPassword) {
-      return res.status(401).send({ message: "Incorrect Password" });
+      return res.status(401).send({ message: "Incorrect credentials" });
     }
 
     // 4. Give JWT Token
