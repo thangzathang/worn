@@ -2,8 +2,8 @@ const router = require("express").Router();
 const jwtGenerator = require("../utils/jwtGenerator");
 
 // Middleware
-// const validInfo = require("../middleware/validInfo");
-// const authorization = require("../middleware/authorization");
+const validInfo = require("../middleware/validInfo");
+const authorization = require("../middleware/authorization");
 
 // Bcrypt
 const bcrypt = require("bcrypt");
@@ -12,7 +12,7 @@ const bcrypt = require("bcrypt");
 const pool = require("../db");
 
 // Registering
-router.post("/register", async (req, res) => {
+router.post("/register", validInfo, async (req, res) => {
   try {
     // 1. Get data
     const { username, email, password } = req.body;
@@ -20,7 +20,6 @@ router.post("/register", async (req, res) => {
     // 2. Check if user exists
     const user = await pool.query("SELECT * FROM users WHERE user_email = $1", [email]);
 
-    return res.status(200).send(user.rows[0]);
     // If User exists
     if (user.rows.length !== 0) {
       return res.status(401).send({ message: "User already exists", data: user.rows });
@@ -75,7 +74,7 @@ router.post("/register", async (req, res) => {
 });
 
 // Login Route
-router.post("/login", async (req, res) => {
+router.post("/login", validInfo, async (req, res) => {
   try {
     // 1. Get data
     const { email, password } = req.body;
@@ -107,7 +106,7 @@ router.post("/login", async (req, res) => {
       user_name: user.rows[0].user_name,
       user_email: user.rows[0].user_email,
     };
-    console.log("User body:", userBody);
+    // console.log("User body:", userBody);
 
     console.log("Sending token and user back");
     // 5. Send JWT as cookie
@@ -131,7 +130,7 @@ router.post("/login", async (req, res) => {
 });
 
 // Verify route
-router.get("/verify", async (req, res) => {
+router.get("/verify", authorization, async (req, res) => {
   try {
     // This means user has passed authorization
 
