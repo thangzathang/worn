@@ -10,7 +10,7 @@ const errorHandler = require("./middleware/errorHandler");
 const corsOptions = require("./config/corsOptions");
 
 // Import auth routes
-const authRoutes = require("./routes/authRoutes");
+const userAuthRoutes = require("./routes/userAuth.routes");
 
 /* Init App */
 const app = express();
@@ -35,7 +35,7 @@ if (process.env.NODE_ENV === "production") {
 }
 
 /* Routes */
-app.use("/auth", authRoutes);
+app.use("/auth", userAuthRoutes);
 
 /* Error catcher */
 app.all("*", (req, res) => {

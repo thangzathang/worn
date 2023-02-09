@@ -17,7 +17,6 @@ router.post("/login", validInfo, loginUser);
 router.get("/verify", authorization, async (req, res) => {
   try {
     // This means user has passed authorization
-
     // res.json(req.user);
     res.json(true);
   } catch (error) {
