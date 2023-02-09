@@ -45,8 +45,8 @@ const registerUser = async (req, res) => {
     );
 
     // 5. Generate JWT.
-    const accessToken = jwtGenerator(newUser.rows[0].user_id);
-    const refreshToken = jwtGenerator_refreshToken(newUser.rows[0].user_id);
+    const accessToken = jwtGenerator(newUser.rows[0].user_name);
+    const refreshToken = jwtGenerator_refreshToken(newUser.rows[0].user_name);
 
     // 6. Send JWT
     return res
@@ -105,7 +105,7 @@ const loginUser = async (req, res) => {
 
     /* JWT and refresh token */
     // 4. Give JWT Token
-    const accessToken = jwtGenerator(foundUser.rows[0].user_id);
+    const accessToken = jwtGenerator(foundUser.rows[0].user_name);
     console.log("Token login:", accessToken);
 
     const userBody = {

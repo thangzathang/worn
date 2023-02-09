@@ -1,15 +1,15 @@
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
-function jwtGenerator(user_id) {
+function jwtGenerator(username) {
   // const payload = {
-  //   user: user_id,
+  //   user: {
+  //     id: user_id,
+  //   },
   // };
 
   const payload = {
-    user: {
-      id: user_id,
-    },
+    username: username,
   };
 
   /* 
@@ -22,11 +22,9 @@ function jwtGenerator(user_id) {
   return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "10minutes" });
 }
 
-function jwtGenerator_refreshToken(user_id) {
+function jwtGenerator_refreshToken(username) {
   const payload = {
-    user: {
-      id: user_id,
-    },
+    username: username,
   };
 
   return jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, { expiresIn: "1d" });

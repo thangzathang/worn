@@ -2,19 +2,19 @@ const router = require("express").Router();
 
 // Middleware
 const validInfo = require("../middleware/validInfo");
-const authorization = require("../middleware/authorization");
+const verifyJWT = require("../middleware/verifyJWT");
 
 // Import controllers
-const userController = require("../controllers/users.controller");
+const authController = require("../controllers/auth.controller");
 
 // Registering
-router.post("/register", validInfo, userController.registerUser);
+router.post("/register", validInfo, authController.registerUser);
 
 // Login Route
-router.post("/login", validInfo, userController.loginUser);
+router.post("/login", validInfo, authController.loginUser);
 
 // Verify route
-router.get("/verify", authorization, async (req, res) => {
+router.get("/verify", verifyJWT, async (req, res) => {
   try {
     // This means user has passed authorization
     // res.json(req.user);
