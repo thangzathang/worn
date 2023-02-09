@@ -25,11 +25,9 @@ const verifyJWT = async (req, res, next) => {
     // const jwtToken = req.cookies.token;
     // // No token means no authorization
     // // console.log("jwtToken:", jwtToken);
-
     // if (!jwtToken) {
     //   // return res.status(403).send({ verified: false, message: "You are not authorized!" });
     //   const token = "";
-
     //   return res
     //     .status(403)
     //     .cookie("token", token, {
@@ -39,7 +37,6 @@ const verifyJWT = async (req, res, next) => {
     //     })
     //     .send({ verified: false, message: "You are not authorized! New empty cookie sent!" });
     // }
-
     // const payload = await jwt.verify(jwtToken, process.env.jwtSecret);
     // req.user = payload.user;
     // next();
