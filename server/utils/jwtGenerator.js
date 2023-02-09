@@ -12,7 +12,14 @@ function jwtGenerator(user_id) {
     },
   };
 
-  return jwt.sign(payload, process.env.jwtSecret, { expiresIn: "1hr" });
+  /* 
+  How to generate 
+  1. type 'node'
+  2. type 'require('crypto').randomBytes(64).toString('hex')'
+  3. copy the result and paste
+   */
+
+  return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "1hr" });
 }
 
 module.exports = jwtGenerator;
