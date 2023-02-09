@@ -5,13 +5,13 @@ const validInfo = require("../middleware/validInfo");
 const authorization = require("../middleware/authorization");
 
 // Import controllers
-const { registerUser, loginUser } = require("../controllers/users.controller");
+const userController = require("../controllers/users.controller");
 
 // Registering
-router.post("/register", validInfo, registerUser);
+router.post("/register", validInfo, userController.registerUser);
 
 // Login Route
-router.post("/login", validInfo, loginUser);
+router.post("/login", validInfo, userController.loginUser);
 
 // Verify route
 router.get("/verify", authorization, async (req, res) => {

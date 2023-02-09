@@ -12,22 +12,27 @@ const registerUser = async (req, res) => {
     // 1. Get data
     const { username, email, password } = req.body;
 
-    // 2. Check if user exists
-    const user = await pool.query("SELECT * FROM users WHERE user_email = $1", [email]);
-
-    // If User exists
-    if (user.rows.length !== 0) {
-      return res.status(401).send({ message: "User already exists", data: user.rows });
+    if (!username || !email || !password) {
+      return res.status(400).send({ message: "Username, email or password are missing" });
     }
 
-    // res.json(user.rows);
+    // 2. Check if user exists
+    const checkDuplicate = await pool.query("SELECT * FROM users WHERE user_email = $1", [email]);
+
+    // If User exists
+    if (checkDuplicate.rows.length !== 0) {
+      // 409 Status code is conflict.
+      return res.status(409).send({ message: "User already exists", data: checkDuplicate.rows });
+    }
+
+    // res.json(checkDuplicate.rows);
 
     // 3. Bcrypt the user password.
     const saltRound = 10;
     const salt = await bcrypt.genSalt(saltRound);
     const bcryptPassword = await bcrypt.hash(password, salt);
 
-    // 4. Add the user to database.
+    // 4. Add/store the user to database.
     // NOTE: We store the encrypted password, not the password itself.
     const newUser = await pool.query(
       `
@@ -70,32 +75,38 @@ const loginUser = async (req, res) => {
     // 1. Get data
     const { email, password } = req.body;
 
-    // 2. Check if user exists
-    const user = await pool.query("SELECT * FROM users WHERE user_email = $1", [email]);
+    if (!email || !password) {
+      return res.status(400).send({ message: "Username and password are required" });
+    }
 
-    console.log("User is:", user.rows[0]);
+    // 2. Check if user exists
+    const foundUser = await pool.query("SELECT * FROM users WHERE user_email = $1", [email]);
+
+    console.log("User is:", foundUser.rows[0]);
 
     // If user does not exist
-    if (user.rows.length === 0) {
+    if (foundUser.rows.length === 0) {
+      // 401 - unauthorized
       return res.status(401).send({ message: "User with email does not exist" });
     }
 
     // 3. Check password
-    const validPassword = await bcrypt.compare(password, user.rows[0].user_password);
+    const validPassword = await bcrypt.compare(password, foundUser.rows[0].user_password);
 
     console.log("Password is valid:", validPassword);
     if (!validPassword) {
       return res.status(401).send({ message: "Incorrect credentials" });
     }
 
+    /* JWT and refresh token */
     // 4. Give JWT Token
-    const token = jwtGenerator(user.rows[0].user_id);
+    const token = jwtGenerator(foundUser.rows[0].user_id);
     console.log("Token login:", token);
 
     const userBody = {
-      user_id: user.rows[0].user_id,
-      user_name: user.rows[0].user_name,
-      user_email: user.rows[0].user_email,
+      user_id: foundUser.rows[0].user_id,
+      user_name: foundUser.rows[0].user_name,
+      user_email: foundUser.rows[0].user_email,
     };
     // console.log("User body:", userBody);
 
