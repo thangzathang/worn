@@ -5,7 +5,7 @@ const pool = require("../db");
 const bcrypt = require("bcrypt");
 
 // Jwt Generator
-const jwtGenerator = require("../utils/jwtGenerator");
+const { jwtGenerator, jwtGenerator_refreshToken } = require("../utils/jwtGenerator");
 
 const registerUser = async (req, res) => {
   try {
@@ -34,6 +34,7 @@ const registerUser = async (req, res) => {
 
     // 4. Add/store the user to database.
     // NOTE: We store the encrypted password, not the password itself.
+    // Save the refresh token in the database? Do I need a new field for that?
     const newUser = await pool.query(
       `
       INSERT INTO users (user_name, user_email, user_password) 
@@ -44,23 +45,27 @@ const registerUser = async (req, res) => {
     );
 
     // 5. Generate JWT.
-    const token = jwtGenerator(newUser.rows[0].user_id);
+    const accessToken = jwtGenerator(newUser.rows[0].user_id);
+    const refreshToken = jwtGenerator_refreshToken(newUser.rows[0].user_id);
 
     // 6. Send JWT
     return res
       .status(200)
-      .cookie("token", token, {
+      .cookie("jwt", refreshToken, {
+        httpOnly: true,
+        // One day maxAge
+        maxAge: 24 * 60 * 60 * 1000,
         sameSite: "none",
         secure: true,
-        httpOnly: true,
       })
-      .send({
-        token,
-        user: {
-          user_id: newUser.rows[0].user_id,
-          user_email: newUser.rows[0].user_id,
-          user_name: newUser.rows[0].user_name,
-        },
+      .json({
+        accessToken,
+        // accessToken,
+        // user: {
+        //   user_id: newUser.rows[0].user_id,
+        //   user_email: newUser.rows[0].user_id,
+        //   user_name: newUser.rows[0].user_name,
+        // },
       });
 
     // res.status(200).send({ token });
@@ -100,8 +105,8 @@ const loginUser = async (req, res) => {
 
     /* JWT and refresh token */
     // 4. Give JWT Token
-    const token = jwtGenerator(foundUser.rows[0].user_id);
-    console.log("Token login:", token);
+    const accessToken = jwtGenerator(foundUser.rows[0].user_id);
+    console.log("Token login:", accessToken);
 
     const userBody = {
       user_id: foundUser.rows[0].user_id,
@@ -114,13 +119,13 @@ const loginUser = async (req, res) => {
     // 5. Send JWT as cookie
     return res
       .status(200)
-      .cookie("token", token, {
+      .cookie("token", accessToken, {
         sameSite: "none",
         secure: true,
         httpOnly: true,
       })
       .send({
-        token,
+        accessToken,
         user: userBody,
       });
 
