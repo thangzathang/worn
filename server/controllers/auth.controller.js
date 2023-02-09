@@ -35,6 +35,7 @@ const registerUser = async (req, res) => {
     // 4. Add/store the user to database.
     // NOTE: We store the encrypted password, not the password itself.
     // Save the refresh token in the database? Do I need a new field for that?
+    // We don't store refresh tokens when we register
     const newUser = await pool.query(
       `
       INSERT INTO users (user_name, user_email, user_password) 
@@ -44,11 +45,13 @@ const registerUser = async (req, res) => {
       [username, email, bcryptPassword]
     );
 
-    // 5. Generate JWT.
+    // 5. Generate required tokens.
     const accessToken = jwtGenerator(newUser.rows[0].user_name);
     const refreshToken = jwtGenerator_refreshToken(newUser.rows[0].user_name);
 
-    // 6. Send JWT
+    // 6. Insert the refresh token?
+
+    // 7. Send JWT
     return res
       .status(200)
       .cookie("jwt", refreshToken, {
@@ -79,14 +82,12 @@ const loginUser = async (req, res) => {
   try {
     // 1. Get data
     const { email, password } = req.body;
-
     if (!email || !password) {
       return res.status(400).send({ message: "Username and password are required" });
     }
 
     // 2. Check if user exists
     const foundUser = await pool.query("SELECT * FROM users WHERE user_email = $1", [email]);
-
     console.log("User is:", foundUser.rows[0]);
 
     // If user does not exist
@@ -97,8 +98,8 @@ const loginUser = async (req, res) => {
 
     // 3. Check password
     const validPassword = await bcrypt.compare(password, foundUser.rows[0].user_password);
-
     console.log("Password is valid:", validPassword);
+
     if (!validPassword) {
       return res.status(401).send({ message: "Incorrect credentials" });
     }
@@ -106,17 +107,29 @@ const loginUser = async (req, res) => {
     /* JWT and refresh token */
     // 4. Give JWT Token
     const accessToken = jwtGenerator(foundUser.rows[0].user_name);
-    console.log("Token login:", accessToken);
+    const refreshToken = jwtGenerator_refreshToken(foundUser.rows[0].user_name);
 
-    const userBody = {
-      user_id: foundUser.rows[0].user_id,
-      user_name: foundUser.rows[0].user_name,
-      user_email: foundUser.rows[0].user_email,
-    };
+    // 5. Insert Refresh token to the user.
+    const UserUpdated = await pool.query(
+      `
+      UPDATE users
+      SET refreshToken = $1
+      WHERE user_id = $2
+      RETURNING *
+      `,
+      [refreshToken, foundUser.rows[0].user_id]
+    );
+    console.log("UserUpdated:", UserUpdated.rows[0]);
+
+    // const userBody = {
+    //   user_id: foundUser.rows[0].user_id,
+    //   user_name: foundUser.rows[0].user_name,
+    //   user_email: foundUser.rows[0].user_email,
+    // };
     // console.log("User body:", userBody);
 
     console.log("Sending token and user back");
-    // 5. Send JWT as cookie
+    // 6. Send JWT as cookie/.
     return res
       .status(200)
       .cookie("token", accessToken, {
@@ -126,7 +139,7 @@ const loginUser = async (req, res) => {
       })
       .send({
         accessToken,
-        user: userBody,
+        // user: userBody,
       });
 
     // res.status(200).send({ token });
