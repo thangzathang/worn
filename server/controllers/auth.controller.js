@@ -176,7 +176,7 @@ const logoutUser = async (req, res) => {
     // If not user, Forbidden. Send empty access Token.
     if (!foundUser) {
       // If no user exists but cookie is verified - we just clear that send cookie.
-      res.clearCookie("jwt", { httpOnly: true, maxAge: 25 * 60 * 60 * 1000 });
+      res.clearCookie("jwt", { httpOnly: true, sameSite: "none" });
       return res.sendStatus(204); //
     }
 
@@ -196,7 +196,7 @@ const logoutUser = async (req, res) => {
     }
 
     // 2. Delete the refreshToken in the res.
-    res.clearCookie("jwt", { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
+    res.clearCookie("jwt", { httpOnly: true, sameSite: "none" });
     // later we add secure: true - only serves in https -> We don't add this in development but in production.
 
     console.log("logoutUser() end");
