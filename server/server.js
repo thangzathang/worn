@@ -11,6 +11,7 @@ const corsOptions = require("./config/corsOptions");
 
 // Import Routes
 const authRoutes = require("./routes/auth.routes");
+const refreshAuthRoutes = require("./routes/refresh.routes");
 const userRoutes = require("./routes/api/users.routes");
 const verifyJWT = require("./middleware/verifyJWT");
 
@@ -38,7 +39,11 @@ if (process.env.NODE_ENV === "production") {
 }
 
 /* Routes */
+// Login, Logout, Register, verify
 app.use("/auth", authRoutes);
+
+// jwt token refresh
+app.use("/refresh", refreshAuthRoutes);
 
 app.use(verifyJWT);
 // If we wanted all users routes to need verification then this code does it like that
