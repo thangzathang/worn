@@ -4,6 +4,9 @@ const pool = require("../db");
 // Bcrypt
 const bcrypt = require("bcrypt");
 
+// Jwt
+const jwt = require("jsonwebtoken");
+
 // Jwt Generator
 const { jwtGenerator, jwtGenerator_refreshToken } = require("../utils/jwtGenerator");
 
@@ -149,4 +152,54 @@ const loginUser = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser };
+const logoutUser = async (req, res) => {
+  // Make sure to delete the access token on the client end.
+  // In this backend, we will be deleting the refresh token.
+
+  const cookies = req.cookies;
+  console.log("logoutUser() start");
+
+  // Verify user can logout
+  if (!cookies?.jwt) {
+    return res.sendStatus(204); // Successful and no content to send back.
+  }
+
+  const refreshToken = cookies.jwt;
+
+  // Check for user with this refreshToken
+  let payload = null;
+  try {
+    payload = await jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+    //   console.log("payload:", payload.user_id);
+    const foundUser = await pool.query("SELECT user_id,user_name,user_email FROM users WHERE user_id = $1", [payload.user_id]);
+
+    // If not user, Forbidden. Send empty access Token.
+    if (!foundUser) {
+      // If no user exists but cookie is verified - we just clear that send cookie.
+      res.clearCookie("jwt", { httpOnly: true, maxAge: 25 * 60 * 60 * 1000 });
+      return res.sendStatus(204); //
+    }
+
+    // Delete refreshToken in the database.
+    const refreshTokenDelete = await pool.query(
+      `
+     UPDATE users
+      SET refreshToken = ''
+      WHERE user_id = $1
+      RETURNING *
+    `,
+      [foundUser.rows[0].user_id]
+    );
+
+    if (refreshTokenDelete) {
+      res.status(200).json({ message: `Refresh Token for user with username "${foundUser.rows[0].user_name}" has been deleted.` });
+    }
+
+    console.log("logoutUser() end");
+  } catch (err) {
+    console.log("Failed to verify:", err);
+    return res.send({ accessToken: "" });
+  }
+};
+
+module.exports = { registerUser, loginUser, logoutUser };

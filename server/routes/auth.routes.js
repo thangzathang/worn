@@ -25,22 +25,26 @@ router.get("/verify", verifyJWT, async (req, res) => {
   }
 });
 
-router.post("/logout", async (req, res) => {
-  try {
-    const token = "";
-    return res
-      .status(200)
-      .cookie("token", token, {
-        sameSite: "none",
-        secure: true,
-        httpOnly: true,
-      })
-      .send({ message: "Logging out" });
-  } catch (error) {
-    console.log("Error at Logout Route", error);
-    res.status(500).send("Error at Logout Route");
-  }
-});
+/* New logout route */
+router.post("/logout", authController.logoutUser);
+
+/* Old logout route */
+// router.post("/logout", async (req, res) => {
+//   try {
+//     const token = "";
+//     return res
+//       .status(200)
+//       .cookie("token", token, {
+//         sameSite: "none",
+//         secure: true,
+//         httpOnly: true,
+//       })
+//       .send({ message: "Logging out" });
+//   } catch (error) {
+//     console.log("Error at Logout Route", error);
+//     res.status(500).send("Error at Logout Route");
+//   }
+// });
 
 module.exports = router;
 

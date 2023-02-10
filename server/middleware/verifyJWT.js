@@ -7,7 +7,7 @@ const verifyJWT = async (req, res, next) => {
     // Check for auth header
     const authHeader = req.headers["authorization"];
     if (!authHeader) {
-      return res.sendStatus(401);
+      return res.status(401).json({ message: "verifyJWT failed" });
     }
     console.log(authHeader); // Bearer Token
 

@@ -20,7 +20,7 @@ const handleRefreshToken = async (req, res) => {
   let payload = null;
 
   try {
-    payload = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+    payload = await jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
     //   console.log("payload:", payload.user_id);
   } catch (err) {
     console.log("Failed to verify:", err);
