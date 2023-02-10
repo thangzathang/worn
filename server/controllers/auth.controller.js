@@ -132,7 +132,7 @@ const loginUser = async (req, res) => {
     // 6. Send JWT as cookie/.
     return res
       .status(200)
-      .cookie("token", accessToken, {
+      .cookie("jwt", accessToken, {
         sameSite: "none",
         secure: true,
         httpOnly: true,
