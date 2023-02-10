@@ -180,7 +180,7 @@ const logoutUser = async (req, res) => {
       return res.sendStatus(204); //
     }
 
-    // Delete refreshToken in the database.
+    // 1. Delete refreshToken in the database.
     const refreshTokenDelete = await pool.query(
       `
      UPDATE users
@@ -192,10 +192,15 @@ const logoutUser = async (req, res) => {
     );
 
     if (refreshTokenDelete) {
-      res.status(200).json({ message: `Refresh Token for user with username "${foundUser.rows[0].user_name}" has been deleted.` });
+      return res.status(200).json({ message: `Refresh Token for user with username "${foundUser.rows[0].user_name}" has been deleted.` });
     }
 
+    // 2. Delete the refreshToken in the res.
+    res.clearCookie("jwt", { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
+    // later we add secure: true - only serves in https -> We don't add this in development but in production.
+
     console.log("logoutUser() end");
+    return res.sendStatus(204);
   } catch (err) {
     console.log("Failed to verify:", err);
     return res.send({ accessToken: "" });
