@@ -4,21 +4,23 @@ dotenv.config();
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const path = require("path");
-
-// Imports
-const errorHandler = require("./middleware/errorHandler");
 const corsOptions = require("./config/corsOptions");
+
+// Imports middleware
+const errorHandler = require("./middleware/errorHandler");
+const verifyJWT = require("./middleware/verifyJWT");
+const credentials = require("./middleware/credentials");
 
 // Import Routes
 const authRoutes = require("./routes/auth.routes");
 const refreshAuthRoutes = require("./routes/refresh.routes");
 const userRoutes = require("./routes/api/users.routes");
-const verifyJWT = require("./middleware/verifyJWT");
 
 /* Init App */
 const app = express();
 
 /* Middleware */
+app.use(credentials);
 app.use(cors(corsOptions));
 app.use(express.json());
 // Middleware for cookies
