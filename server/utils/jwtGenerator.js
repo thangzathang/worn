@@ -19,7 +19,7 @@ function jwtGenerator(username) {
   3. copy the result and paste
    */
 
-  return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "10minutes" });
+  return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "15minutes" });
 }
 
 function jwtGenerator_refreshToken(username) {
