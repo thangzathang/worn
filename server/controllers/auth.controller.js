@@ -59,7 +59,7 @@ const registerUser = async (req, res) => {
         // One day maxAge
         maxAge: 24 * 60 * 60 * 1000,
         sameSite: "none",
-        secure: true,
+        // secure: true,
       })
       .json({
         accessToken,
@@ -106,8 +106,8 @@ const loginUser = async (req, res) => {
 
     /* JWT and refresh token */
     // 4. Give JWT Token
-    const accessToken = jwtGenerator(foundUser.rows[0].user_name);
-    const refreshToken = jwtGenerator_refreshToken(foundUser.rows[0].user_name);
+    const accessToken = jwtGenerator(foundUser.rows[0].user_id);
+    const refreshToken = jwtGenerator_refreshToken(foundUser.rows[0].user_id);
 
     // 5. Insert Refresh token to the user.
     const UserUpdated = await pool.query(
@@ -132,9 +132,9 @@ const loginUser = async (req, res) => {
     // 6. Send JWT as cookie/.
     return res
       .status(200)
-      .cookie("jwt", accessToken, {
+      .cookie("jwt", refreshToken, {
         sameSite: "none",
-        secure: true,
+        // secure: true,
         httpOnly: true,
       })
       .send({

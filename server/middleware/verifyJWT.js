@@ -17,7 +17,7 @@ const verifyJWT = async (req, res, next) => {
         // Invalid - 403.
         return res.sendStatus(403);
       }
-      req.user = decoded.username;
+      req.user = decoded.user_id;
       next();
     });
 
