@@ -88,7 +88,7 @@ const loginUser = async (req, res) => {
 
     // 2. Check if user exists
     const foundUser = await pool.query("SELECT * FROM users WHERE user_email = $1", [email]);
-    console.log("User is:", foundUser.rows[0]);
+    // console.log("User is:", foundUser.rows[0]);
 
     // If user does not exist
     if (foundUser.rows.length === 0) {
@@ -98,7 +98,7 @@ const loginUser = async (req, res) => {
 
     // 3. Check password
     const validPassword = await bcrypt.compare(password, foundUser.rows[0].user_password);
-    console.log("Password is valid:", validPassword);
+    // console.log("Password is valid:", validPassword);
 
     if (!validPassword) {
       return res.status(401).send({ message: "Incorrect credentials" });
@@ -119,7 +119,7 @@ const loginUser = async (req, res) => {
       `,
       [refreshToken, foundUser.rows[0].user_id]
     );
-    console.log("UserUpdated:", UserUpdated.rows[0]);
+    // console.log("UserUpdated:", UserUpdated.rows[0]);
 
     // const userBody = {
     //   user_id: foundUser.rows[0].user_id,
@@ -128,7 +128,7 @@ const loginUser = async (req, res) => {
     // };
     // console.log("User body:", userBody);
 
-    console.log("Sending token and user back");
+    console.log("Successfully Logged In");
     // 6. Send JWT as cookie/.
     return res
       .status(200)
