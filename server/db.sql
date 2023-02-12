@@ -14,6 +14,7 @@ CREATE TABLE users(
     user_name VARCHAR(255) NOT NULL,
     user_email VARCHAR(255) NOT NULL,
     user_password VARCHAR(255) NOT NULL,
+    roles [VARCHAR(255)] NOT NULL,
     PRIMARY KEY (user_id)
 );
 -- If you get error because of the uuid failure, add the extension below.
@@ -42,9 +43,9 @@ CREATE TABLE movies(
 );
 
 -- User add
-INSERT INTO users(user_name, user_email, user_password) VALUES ('ThangZaThang', 'thangzathang@gmail.com', 'thang123')
+INSERT INTO users(user_name, user_email, user_password, roles) VALUES ('ThangZaThang', 'thangzathang@gmail.com', 'thang123', '{Admin, Creator, User}');
 
-INSERT INTO users(user_name, user_email, user_password) VALUES ('Sam', 'sam@gmail.com', 'sam123')
+INSERT INTO users(user_name, user_email, user_password, roles) VALUES ('Sam', 'sam@gmail.com', 'sam123', '{Admin}');
 
 -- User Fake movies
 INSERT INTO movies(user_id, movie_name,movie_description, movie_rating) 
