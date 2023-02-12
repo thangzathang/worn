@@ -43,9 +43,9 @@ CREATE TABLE movies(
 );
 
 -- User add
-INSERT INTO users(user_name, user_email, user_password, roles) VALUES ('ThangZaThang', 'thangzathang@gmail.com', 'thang123', '{Admin, Creator, User}');
+INSERT INTO users(user_name, user_email, user_password, roles) VALUES ('ThangZaThang', 'thangzathang@gmail.com', 'thang123', '{"Admin": 5150,"Creator": 1994,"User": 2001}');
 
-INSERT INTO users(user_name, user_email, user_password, roles) VALUES ('Sam', 'sam@gmail.com', 'sam123', '{Admin}');
+INSERT INTO users(user_name, user_email, user_password, roles) VALUES ('Sam', 'sam@gmail.com', 'sam123', '{"Admin": 5150,"Creator": 1994,"User": 2001}');
 
 -- User Fake movies
 INSERT INTO movies(user_id, movie_name,movie_description, movie_rating) 
