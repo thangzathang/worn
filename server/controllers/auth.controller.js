@@ -122,6 +122,9 @@ const loginUser = async (req, res) => {
       `,
       [refreshToken, foundUser.rows[0].user_id]
     );
+
+    //--> Don't ever have to do this
+    // await pool.end();
     // console.log("UserUpdated:", UserUpdated.rows[0]);
 
     // const userBody = {
