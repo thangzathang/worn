@@ -14,7 +14,7 @@ CREATE TABLE users(
     user_name VARCHAR(255) NOT NULL,
     user_email VARCHAR(255) NOT NULL,
     user_password VARCHAR(255) NOT NULL,
-    roles [VARCHAR(255)] NOT NULL,
+    roles jsonb,
     PRIMARY KEY (user_id)
 );
 -- If you get error because of the uuid failure, add the extension below.
@@ -46,6 +46,9 @@ CREATE TABLE movies(
 INSERT INTO users(user_name, user_email, user_password, roles) VALUES ('ThangZaThang', 'thangzathang@gmail.com', 'thang123', '{"Admin": 5150,"Creator": 1994,"User": 2001}');
 
 INSERT INTO users(user_name, user_email, user_password, roles) VALUES ('Sam', 'sam@gmail.com', 'sam123', '{"Admin": 5150,"Creator": 1994,"User": 2001}');
+
+-- Give User permission
+UPDATE users SET roles = '{"Admin": 5150,"Creator": 1994,"User": 2001}' WHERE user_email = 'sam@gmail.com';
 
 -- User Fake movies
 INSERT INTO movies(user_id, movie_name,movie_description, movie_rating) 

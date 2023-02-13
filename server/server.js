@@ -29,6 +29,9 @@ app.use(cookieParser());
 // PORT config
 const PORT = process.env.PORT || 5000;
 
+// For testing only - delete later
+// app.use("/users", userRoutes);
+
 // To show something to the user
 app.get("/", (req, res) => {
   res.send("This is the P.E.R.N stack application!");
