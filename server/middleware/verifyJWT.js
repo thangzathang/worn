@@ -5,11 +5,12 @@ const verifyJWT = async (req, res, next) => {
   try {
     /* Dave Gray - node code */
     // Check for auth header
-    const authHeader = req.headers["authorization"];
-    if (!authHeader) {
+    const authHeader = req.headers.authorization || req.headers.Authorization;
+
+    if (!authHeader?.startsWith("Bearer ")) {
       return res.status(401).json({ message: "verifyJWT failed" });
     }
-    console.log(authHeader); // Bearer Token
+    // console.log(authHeader); // Bearer Token
 
     const token = authHeader.split(" ")[1];
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
@@ -17,7 +18,8 @@ const verifyJWT = async (req, res, next) => {
         // Invalid - 403.
         return res.sendStatus(403);
       }
-      req.user = decoded.user_id;
+      req.user = decoded.UserInfo.user_id;
+      req.roles = decoded.UserInfo.roles;
       next();
     });
 
