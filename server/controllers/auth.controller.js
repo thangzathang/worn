@@ -93,6 +93,8 @@ const loginUser = async (req, res) => {
     // 2. Check if user exists
     const foundUser = await pool.query("SELECT * FROM users WHERE user_email = $1", [email]);
     // console.log("User is:", foundUser.rows[0]);
+    let roles = Object.values(foundUser.rows[0].roles);
+    // console.log("User Role is:", roles);
 
     // If user does not exist
     if (foundUser.rows.length === 0) {
@@ -110,8 +112,8 @@ const loginUser = async (req, res) => {
 
     /* JWT and refresh token */
     // 4. Give JWT Token
-    const accessToken = jwtGenerator(foundUser.rows[0].user_id);
-    const refreshToken = jwtGenerator_refreshToken(foundUser.rows[0].user_id);
+    const accessToken = jwtGenerator(foundUser.rows[0].user_id, roles);
+    const refreshToken = jwtGenerator_refreshToken(foundUser.rows[0].user_id, roles);
 
     // 5. Insert Refresh token to the user.
     const UserUpdated = await pool.query(

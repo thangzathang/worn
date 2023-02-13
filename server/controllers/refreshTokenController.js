@@ -30,14 +30,13 @@ const handleRefreshToken = async (req, res) => {
   try {
     // If token is valid, using the payload from the .verify, get the user.
     const foundUser = await pool.query("SELECT user_id,user_name,user_email FROM users WHERE user_id = $1", [payload.user_id]);
-
     // If not user, Forbidden. Send empty access Token.
     if (!foundUser) {
       return res.sendStatus(403).json({ accessToken: "" }); // Forbidden
     }
-
+    let roles = foundUser.rows[0].roles;
     // If User is found, we send a new accessToken
-    const accessToken = jwtGenerator(foundUser.rows[0].user_id);
+    const accessToken = jwtGenerator(foundUser.rows[0].user_id, roles);
     res.status(200).json({ accessToken });
   } catch (error) {
     console.log("Error at getting user:", error);
