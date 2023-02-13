@@ -14,6 +14,7 @@ const registerUser = async (req, res) => {
   try {
     // 1. Get data
     const { username, email, password } = req.body;
+    let roles = '{"User": 2001}';
 
     if (!username || !email || !password) {
       return res.status(400).send({ message: "Username, email or password are missing" });
@@ -41,11 +42,11 @@ const registerUser = async (req, res) => {
     // We don't store refresh tokens when we register
     const newUser = await pool.query(
       `
-      INSERT INTO users (user_name, user_email, user_password) 
-      VALUES ($1, $2, $3)
+      INSERT INTO users (user_name, user_email, user_password, roles) 
+      VALUES ($1, $2, $3, $4)
       RETURNING *
       `,
-      [username, email, bcryptPassword]
+      [username, email, bcryptPassword, roles]
     );
 
     // 5. Generate required tokens.
