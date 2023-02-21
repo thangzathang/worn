@@ -14,6 +14,8 @@ const registerUser = async (req, res) => {
   try {
     // 1. Get data
     const { username, email, password } = req.body;
+    console.log("Data we get:", { username, email, password });
+
     let roles = '{"User": 2001}';
 
     if (!username || !email || !password) {
