@@ -7,6 +7,7 @@ import axios from "./api/axios";
 
 const USER_REGEX = /^[a-zA-Z0-9]+([._]?[a-zA-Z0-9]{3,23})$/;
 const PWD_REGEX = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,24}$/;
+const EMAIL_REGEX = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
 // URLS
 const REGISTER_URL = "/auth/register";
@@ -19,6 +20,11 @@ const Register = () => {
   const [user, setUser] = useState("");
   const [validName, setValidName] = useState(false);
   const [userFocus, setUserFocus] = useState(false);
+
+  // Email
+  const [email, setEmail] = useState("");
+  const [validEmail, setValidEmail] = useState(false);
+  const [emailFocus, setEmailFocus] = useState(false);
 
   // Password
   const [pwd, setPwd] = useState("");
@@ -57,6 +63,14 @@ const Register = () => {
     setValidMatch(match);
   }, [pwd, matchPwd]);
 
+  // Valid Email
+  useEffect(() => {
+    const result = EMAIL_REGEX.test(email);
+    console.log(result);
+    console.log(email);
+    setValidEmail(result);
+  }, [email]);
+
   // Error Message
   useEffect(() => {
     // Clear out the error message
@@ -79,7 +93,7 @@ const Register = () => {
     // setSuccess(true);
 
     try {
-      const response = await axios.post(REGISTER_URL, JSON.stringify({ user, pwd }), {
+      const response = await axios.post(REGISTER_URL, JSON.stringify({ user, pwd, email }), {
         headers: {
           "Content-Type": "application/json",
           withCredentials: true,
@@ -149,6 +163,30 @@ const Register = () => {
               4 to 24 characters. <br />
               Must begin with letter. <br />
               Letters, numbers, underscores, hyphens allowed.
+            </p>
+
+            {/* Email */}
+            <label htmlFor="email">
+              Email:
+              <FontAwesomeIcon icon={faCheck} className={validEmail ? "valid" : "hide"} />
+              <FontAwesomeIcon icon={faTimes} className={validEmail || !email ? "hide" : "invalid"} />
+            </label>
+            <input
+              //
+              required
+              type="text"
+              id="email"
+              autoComplete={"off"}
+              onChange={(e) => setEmail(e.target.value)}
+              aria-invalid={validEmail ? "false" : "true"}
+              aria-describedby="uidnote"
+              onFocus={() => setEmailFocus(true)}
+              onBlur={() => setEmailFocus(false)}
+            />
+            <p id="uidnote" className={emailFocus && email && !validEmail ? "instructions" : "offscreen"}>
+              <FontAwesomeIcon icon={faInfoCircle} />
+              Email must have '@'' and end with a '.com'
+              <br />
             </p>
 
             {/* Password */}
