@@ -28,6 +28,8 @@ const Login = () => {
   const [userEmail, setUserEmail] = useState("");
   const [pwd, setPwd] = useState("");
   const [errMsg, setErrMsg] = useState("");
+  // Show password
+  const [showPassword, setShowPassword] = useState("password");
 
   // Auto Focus on the user email field
   useEffect(() => {
@@ -100,14 +102,31 @@ const Login = () => {
         <label htmlFor="password">Password:</label>
         <input
           //
-          type="password"
+          type={`${showPassword}`}
           id="password"
           onChange={(e) => setPwd(e.target.value)}
           value={pwd}
           required
         />
+
         <button>Sign In</button>
       </form>
+      <button
+        onClick={() =>
+          setShowPassword((prev) => {
+            console.log("Prev", prev);
+            if (prev === "password") {
+              return (prev = "text");
+            } else {
+              return (prev = "password");
+            }
+          })
+        }
+        name="passwordCheckbox"
+        id="passwordCheckbox"
+      >
+        Show Password
+      </button>
       <p>
         Need an Account?
         <br />
