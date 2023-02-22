@@ -145,7 +145,8 @@ const loginUser = async (req, res) => {
       .status(200)
       .cookie("jwt", refreshToken, {
         sameSite: "none",
-        // secure: true,
+        // You need secure; true for chrome.
+        secure: true,
         httpOnly: true,
       })
       .send({

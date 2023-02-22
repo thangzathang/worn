@@ -12,7 +12,7 @@ const handleRefreshToken = async (req, res) => {
 
   // If no token, send empty accessToken and 401 // Unauthorized.
   if (!cookies?.jwt) {
-    return res.status(401).send({ accessToken: "" });
+    return res.status(401).send({ accessToken: "", message: "You had not cookies jwt to begin with so you get blank" });
   }
 
   // Init refresh Token and payload
