@@ -50,15 +50,15 @@ const Login = () => {
         // Needed for JWT tokens.
       });
 
-      console.log("Response from Backend:", response);
+      // console.log("Response from Backend:", response);
       //console.log(JSON.stringify(response));
 
       const accessToken = response?.data?.accessToken;
-      console.log("Access Token:", accessToken);
+      // console.log("Access Token:", accessToken);
 
       // We just need the values.
       const roles = Object.values(response?.data?.roles);
-      console.log("User roles:", roles);
+      // console.log("User roles:", roles);
       setAuth({ userEmail, pwd, roles: roles, accessToken });
 
       setUserEmail("");

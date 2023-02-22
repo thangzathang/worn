@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
+import useRefreshToken from "../hooks/useRefreshToken";
+
 // Axios
 import axios from "../api/axios";
 // import useAxiosPrivate from "../hooks/useAxiosPrivate";
@@ -8,6 +10,8 @@ import axios from "../api/axios";
 const Users = () => {
   const [users, setUsers] = useState();
   // const axiosPrivate = useAxiosPrivate();
+  const refresh = useRefreshToken();
+  // console.log("refresh:", refresh);
 
   // React Router Dom
   const navigate = useNavigate();
@@ -53,6 +57,13 @@ const Users = () => {
       ) : (
         <p>No users to display</p>
       )}
+      <button
+        onClick={() => {
+          refresh();
+        }}
+      >
+        Refresh
+      </button>
     </article>
   );
 };
