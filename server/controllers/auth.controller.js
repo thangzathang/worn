@@ -151,6 +151,7 @@ const loginUser = async (req, res) => {
       .send({
         accessToken,
         // user: userBody,
+        roles: foundUser.rows[0].roles,
       });
 
     // res.status(200).send({ token });
