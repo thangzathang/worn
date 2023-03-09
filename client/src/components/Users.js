@@ -35,7 +35,7 @@ const Users = () => {
           console.error("getUsers aborted", err);
         }
         // THis means user Auth refresh token has expired so they need to login again
-        if (err.response.status && err.response.status === 401) {
+        if (err?.response?.status === 401) {
           navigate("/login", { state: { from: location }, replace: true });
         }
         // Meaning if it's just the abort controller unmount, don't need to navigate
