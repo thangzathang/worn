@@ -4,12 +4,13 @@ import { useNavigate, useLocation } from "react-router-dom";
 import useRefreshToken from "../hooks/useRefreshToken";
 
 // Axios
-import axios from "../api/axios";
-// import useAxiosPrivate from "../hooks/useAxiosPrivate";
+// import axios from "../api/axios";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 const Users = () => {
   const [users, setUsers] = useState();
-  // const axiosPrivate = useAxiosPrivate();
+  const axiosPrivate = useAxiosPrivate();
+
   const refresh = useRefreshToken();
   // console.log("refresh:", refresh);
 
@@ -24,15 +25,15 @@ const Users = () => {
 
     const getUsers = async () => {
       try {
-        // const response = await axiosPrivate.get("/users", {
-        //   // allows the cancellation of the signal
-        //   signal: controller.signal,
-        // });
-        // console.log(response.data);
-        // isMounted && setUsers(response.data);
+        const response = await axiosPrivate.get("/users", {
+          // allows the cancellation of the signal
+          signal: controller.signal,
+        });
+        console.log("User Data we got back:", response.data);
+        isMounted && setUsers(await response.data);
       } catch (err) {
-        console.error(err);
-        navigate("/login", { state: { from: location }, replace: true });
+        console.error("Get Users aborted", err);
+        // navigate("/login", { state: { from: location }, replace: true });
       }
     };
 
@@ -51,7 +52,7 @@ const Users = () => {
       {users?.length ? (
         <ul>
           {users.map((user, i) => (
-            <li key={i}>{user?.username}</li>
+            <li key={i}>{user?.user_name}</li>
           ))}
         </ul>
       ) : (

@@ -95,8 +95,8 @@ const loginUser = async (req, res) => {
     // 2. Check if user exists
     const foundUser = await pool.query("SELECT * FROM users WHERE user_email = $1", [email]);
     // console.log("User is:", foundUser.rows[0]);
-    let roles = Object.values(foundUser.rows[0].roles);
-    // console.log("User Role is:", roles);
+    let roles = Object.values(await foundUser.rows[0].roles);
+    // console.log("foundUser has roles:", roles);
 
     // If user does not exist
     if (foundUser.rows.length === 0) {
@@ -139,7 +139,7 @@ const loginUser = async (req, res) => {
     // };
     // console.log("User body:", userBody);
 
-    console.log("Successfully Logged In");
+    console.log("auth.controller.loginUser: Successfully Logged In");
     // 6. Send JWT as cookie/.
     return res
       .status(200)
