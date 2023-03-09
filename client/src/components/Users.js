@@ -29,11 +29,16 @@ const Users = () => {
           // allows the cancellation of the signal
           signal: controller.signal,
         });
-        console.log("User Data we got back:", response.data);
-        isMounted && setUsers(await response.data);
+        isMounted && setUsers(response && response.data);
       } catch (err) {
-        console.error("Get Users aborted", err);
-        // navigate("/login", { state: { from: location }, replace: true });
+        if (err.code !== "ERR_CANCELED") {
+          console.error("Get Users aborted", err);
+        }
+        // Meaning if it's just the abort controller unmount, don't need to navigate
+        if ((err.code = "ERR_CANCELED")) {
+          return;
+        }
+        navigate("/login", { state: { from: location }, replace: true });
       }
     };
 
