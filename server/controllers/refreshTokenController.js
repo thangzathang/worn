@@ -37,7 +37,7 @@ const handleRefreshToken = async (req, res) => {
     let roles = foundUser.rows[0].roles;
     // If User is found, we send a new accessToken
     const accessToken = jwtGenerator(foundUser.rows[0].user_id, roles);
-    res.status(200).json({ accessToken });
+    res.status(200).json({ accessToken, roles });
   } catch (error) {
     console.log("Error at getting user:", error);
     return res.status(403).send({ accessToken: "" });

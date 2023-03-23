@@ -94,7 +94,9 @@ const loginUser = async (req, res) => {
 
     // 2. Check if user exists
     const foundUser = await pool.query("SELECT * FROM users WHERE user_email = $1", [email]);
-    // console.log("User is:", foundUser.rows[0]);
+
+    console.log("foundUser:", foundUser);
+
     let roles = Object.values(await foundUser.rows[0].roles);
     // console.log("foundUser has roles:", roles);
 
